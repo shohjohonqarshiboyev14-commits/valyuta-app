@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Valyuta AI PRO</title>
+<script src="https://telegram.org"></script>
+<style>
+  body { background: #0f172a; color: #f8fafc; font-family: sans-serif; margin: 0; padding: 14px; }
+  .h { text-align: center; margin-bottom: 10px; }
+  .h h2 { margin: 0; font-size: 19px; }
+  .h p { margin: 3px 0 0; font-size: 11px; color: #94a3b8; }
+  .tabs, .modes { display: flex; gap: 6px; margin-bottom: 10px; }
+  .tabs { background: #1e293b; padding: 5px; border-radius: 14px; }
+  .tab { flex: 1; text-align: center; padding: 8px 4px; font-size: 12px; font-weight: bold; border-radius: 10px; color: #94a3b8; }
+  .tab.on { background: #3b82f6; color: #fff; }
+  .mode { flex: 1; background: #1e293b; border: 1px solid #334155; color: #94a3b8; padding: 7px 4px; border-radius: 10px; font-size: 11px; text-align: center; font-weight: bold; }
+  .mode.on { border-color: #3b82f6; color: #fff; background: #1d4ed844; }
+  .card { background: #1e293b; border-radius: 16px; padding: 14px; margin-bottom: 12px; }
+  .row { display: flex; gap: 8px; }
+  input { width: 100%; background: #0f172a; color: #fff; border: 1px solid #334155; border-radius: 12px; padding: 11px; font-size: 19px; font-weight: bold; outline: none; }
+  select { background: #3b82f6; color: #fff; border: none; border-radius: 12px; padding: 11px; font-size: 15px; font-weight: bold; }
+  .chips { display: flex; gap: 6px; overflow-x: auto; margin-top: 10px; }
+  .chip { background: #0f172a; color: #e2e8f0; border: 1px solid #334155; border-radius: 20px; padding: 5px 11px; font-size: 12px; white-space: nowrap; }
+  .it { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #334155; }
+  .it:last-child { border-bottom: none; }
+  .val { font-size: 16px; font-weight: bold; text-align: right; }
+  .sub { font-size: 11px; color: #94a3b8; display: block; }
+  .btn { width: 100%; background: #3b82f6; color: #fff; border: none; border-radius: 14px; padding: 14px; font-size: 15px; font-weight: bold; }
+  .hide { display: none; }
+  .cb { display: flex; align-items: flex-end; justify-content: space-between; height: 100px; padding-top: 20px; gap: 6px; }
+  .bw { flex: 1; display: flex; flex-direction: column; align-items: center; }
+  .bar { width: 100%; background: #3b82f6; border-radius: 6px 6px 0 0; }
+</style>
+</head>
+<body>
+<div class="h"><h2>💱 Valyuta AI • Bank & MB</h2><p id="dt">Jonli bank va bozor kursi</p></div>
+<div class="tabs">
+  <div class="tab on" id="t1" onclick="tab(1)">💱 Kalkulyator</div>
+  <div class="tab" id="t2" onclick="tab(2)">🇷🇺➡️🇺🇿 Perevod</div>
+  <div class="tab" id="t3" onclick="tab(3)">📈 Grafik & Kripto</div>
+</div>
+<div id="p1">
+  <div class="modes">
+    <div class="mode on" id="m0" onclick="mod(0)">🏛 MB Kursi</div>
+    <div class="mode" id="m1" onclick="mod(1)">📥 Bank Olish</div>
+    <div class="mode" id="m2" onclick="mod(2)">📤 Bank Sotish</div>
+  </div>
+  <div class="card">
+    <div class="row">
+      <input type="number" id="amt" value="100" oninput="calc()">
+      <select id="ccy" onchange="calc()">
+        <option value="USD">🇺🇸 USD</option><option value="RUB">🇷🇺 RUB</option><option value="UZS">🇺🇿 UZS</option>
+        <option value="EUR">🇪🇺 EUR</option><option value="KZT">🇰🇿 KZT</option><option value="TRY">🇹🇷 TRY</option>
+      </select>
+    </div>
+    <div class="chips">
+      <div class="chip" onclick="sa(0)">0</div><div class="chip" onclick="sa(100)">100</div>
+      <div class="chip" onclick="sa(1000)">1 000</div><div class="chip" onclick="sa(10000)">10 000</div>
+      <div class="chip" onclick="sa(1000000)">1 mln</div><div class="chip" onclick="sa(1000000000)">1 mlrd</div>
+      <div class="chip" onclick="sa(1000000000000)">1 trln</div>
+    </div>
+  </div>
+  <div class="card" id="res"></div>
+  <button class="btn" onclick="snd()">📤 Natijani chatga yuborish</button>
+</div>
+<div id="p2" class="hide">
+  <div class="card">
+    <div style="font-size:13px;color:#94a3b8;margin-bottom:8px">🇷🇺 Rossiyadan qancha rubl yuborasiz?</div>
+    <input type="number" id="ra" value="10000" oninput="tr()">
+    <div class="chips">
+      <div class="chip" onclick="sr(5000)">5 000 ₽</div><div class="chip" onclick="sr(10000)">10 000 ₽</div>
+      <div class="chip" onclick="sr(30000)">30 000 ₽</div><div class="chip" onclick="sr(50000)">50 000 ₽</div>
+    </div>
+  </div>
+  <div class="card" id="trr"></div>
+</div>
+<div id="p3" class="hide">
+  <div class="card"><div style="font-size:13px;font-weight:bold">📈 1 USD — 7 kunlik dinamika</div><div class="cb" id="ch"></div></div>
+  <div class="card" id="cr"></div>
+</div>
+<script>
+var tg=window.Telegram&&window.Telegram.WebApp;if(tg)tg.expand();
+var br={UZS:1,USD:12850,RUB:132,EUR:13600,KZT:25.5,TRY:370},nm={UZS:"🇺🇿 So'm",USD:"🇺🇸 Dollar",RUB:"🇷🇺 Rubl",EUR:"🇪🇺 Yevro",KZT:"🇰🇿 Tenge",TRY:"🇹🇷 Lira"},md=0;
+function tab(n){for(var i=1;i<=3;i++){document.getElementById("p"+i).className=i==n?"":"hide";document.getElementById("t"+i).className=i==n?"tab on":"tab";}}
+function mod(m){md=m;for(var i=0;i<=2;i++)document.getElementById("m"+i).className=i==m?"mode on":"mode";calc();}
+function gr(){var r={};for(var k in br){if(k=="UZS"){r[k]=1;continue;}r[k]=md==0?br[k]:(md==1?br[k]*(k=="RUB"?0.94:0.995):br[k]*(k=="RUB"?1.04:1.005));}return r;}
+function hm(v){return v>=1e15?(v/1e15).toFixed(2)+" kvadr":v>=1e12?(v/1e12).toFixed(2)+" trln":v>=1e9?(v/1e9).toFixed(2)+" mlrd":v>=1e6?(v/1e6).toFixed(2)+" mln":"";}
+function sa(v){document.getElementById("amt").value=v;calc();}
+function sr(v){document.getElementById("ra").value=v;tr();}
+function calc(){var r=gr(),a=parseFloat(document.getElementById("amt").value)||0,f=document.getElementById("ccy").value,u=a*r[f],h="";for(var k in r)if(k!=f){var v=u/r[k];h+='<div class="it"><span>'+nm[k]+' <small style="color:#64748b">('+r[k].toFixed(k=="RUB"?1:0)+')</small></span><div class="val">'+v.toLocaleString("en-US",{maximumFractionDigits:2})+'<span class="sub">'+hm(v)+'</span></div></div>';}document.getElementById("res").innerHTML=h;}
+function tr(){var r=parseFloat(document.getElementById("ra").value)||0,bk=br.RUB*0.96,u=r*bk,d=u/(br.USD*1.005);document.getElementById("trr").innerHTML='<div class="it"><span>🇺🇿 Uzcard/Humo</span><div class="val">'+u.toLocaleString("en-US",{maximumFractionDigits:0})+' UZS<span class="sub">'+hm(u)+'</span></div></div><div class="it"><span>🇺🇸 Dollar ekvivalenti</span><div class="val">'+d.toLocaleString("en-US",{maximumFractionDigits:2})+' USD</div></div><div class="it"><span>🏦 1 RUB kursi</span><div class="val">'+bk.toFixed(2)+' so\'m</div></div>';}
+function dr(){var u=Math.round(br.USD),ds=["Du","Se","Ch","Pa","Ju","Sh","Bugun"],vs=[u-45,u-30,u-38,u-15,u-22,u-8,u],mn=Math.min.apply(null,vs)-20,mx=Math.max.apply(null,vs),h="";for(var i=0;i<7;i++){var p=Math.round(((vs[i]-mn)/(mx-mn))*70)+20;h+='<div class="bw"><span style="font-size:9px">'+vs[i]+'</span><div class="bar" style="height:'+p+'px"></div><span style="font-size:10px;color:#94a3b8;margin-top:4px">'+ds[i]+'</span></div>';}document.getElementById("ch").innerHTML=h;document.getElementById("cr").innerHTML='<div class="it"><span>💵 1 USDT</span><div class="val">1.00 $<span class="sub">'+u.toLocaleString("en-US")+' UZS</span></div></div><div class="it"><span>💎 1 TON</span><div class="val">5.40 $<span class="sub">'+Math.round(5.4*u).toLocaleString("en-US")+' UZS</span></div></div><div class="it"><span>₿ 1 BTC</span><div class="val">92,000 $<span class="sub">'+Math.round(92000*u).toLocaleString("en-US")+' UZS</span></div></div>';}
+function snd(){if(tg)tg.sendData((document.getElementById("amt").value||0)+" "+document.getElementById("ccy").value);}
+calc();tr();dr();
+fetch("https://er-api.com").then(function(r){return r.json();}).then(function(d){if(d&&d.rates){var u=d.rates.UZS;br.USD=u;br.RUB=u/d.rates.RUB;br.EUR=u/d.rates.EUR;br.KZT=u/d.rates.KZT;br.TRY=u/d.rates.TRY;document.getElementById("dt").innerText="Jonli bank va bozor kursi • Yangilandi";calc();tr();dr();}});
+</script>
+</body>
+</html>
